@@ -14,6 +14,14 @@ import Strategy.ContextoEntrega;
 import java.util.Scanner;
 
 public class Main {
+    private static final int OPCION_INICIAR_SESION = 1;
+    private static final int OPCION_CREAR_CUENTA = 2;
+    private static final int OPCION_SALIR = 3;
+
+    private static final int OPCION_PEDIDO_REGULAR = 1;
+    private static final int OPCION_PEDIDO_EVENTO = 2;
+    private static final int OPCION_REGRESAR = 3;
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         ControladorPedido controlador = new ControladorPedido();
@@ -36,48 +44,15 @@ public class Main {
             scanner.nextLine(); // Limpiar buffer
 
             switch (opcionMenu) {
-                case 1:
-                    // Iniciar sesión
-                    System.out.println("\n=== Inicio de sesión ===");
-                    System.out.print("Nombre de usuario: ");
-                    String nombreUsuario = scanner.nextLine();
-                    System.out.print("Contraseña: ");
-                    String contrasena = scanner.nextLine();
-
-                    if (gestionClientes.validarInicioSesion(nombreUsuario, contrasena)) {
-                        Cliente cliente = gestionClientes.buscarClientePorNombreUsuario(nombreUsuario);
-                        Coordenadas ubicacionCliente = cliente.getUbicacion();
-
-                        boolean continuar = true;
-                        while (continuar) {
-                            System.out.println("\n=== Tipo de Pedido ===");
-                            System.out.println("1. Pedido Regular");
-                            System.out.println("2. Pedido de Evento");
-                            System.out.println("3. Regresar");
-                            System.out.print("Selecciona una opción: ");
-                            int opcionTipoPedido = scanner.nextInt();
-                            scanner.nextLine();
-
-                            if (opcionTipoPedido == 1) {
-                                // Menú de Pedido Regular
-                                procesarPedidoRegular(scanner, controlador, notificador);
-                            } else if (opcionTipoPedido == 2) {
-                                // Menú de Pedido de Evento
-                                procesarPedidoEvento(scanner, controlador, notificador);
-                            } else {
-                                continuar = false;
-                            }
-                        }
-                    }
+                case OPCION_INICIAR_SESION:
+                    iniciarSesion(scanner, controlador, notificador, gestionClientes);
                     break;
 
-                case 2:
-                    // Crear cuenta nueva
+                case OPCION_CREAR_CUENTA:
                     crearCuentaNueva(scanner, gestionClientes);
                     break;
 
-                case 3:
-                    // Salir del programa
+                case OPCION_SALIR:
                     ejecutando = false;
                     System.out.println("Gracias por usar Mojitos. ¡Hasta luego!");
                     break;
@@ -89,7 +64,45 @@ public class Main {
         scanner.close();
     }
 
-    private static void procesarPedidoRegular(Scanner scanner, ControladorPedido controlador, NotificadorPedido notificador) {
+    private static void iniciarSesion(Scanner scanner, ControladorPedido controlador, NotificadorPedido notificador, GestionClientes gestionClientes) {
+        System.out.println("\n=== Inicio de sesión ===");
+        System.out.print("Nombre de usuario: ");
+        String nombreUsuario = scanner.nextLine();
+        System.out.print("Contraseña: ");
+        String contrasena = scanner.nextLine();
+
+        if (gestionClientes.validarInicioSesion(nombreUsuario, contrasena)) {
+            Cliente cliente = gestionClientes.buscarClientePorNombreUsuario(nombreUsuario);
+            Coordenadas ubicacionCliente = cliente.getUbicacion();
+
+            boolean continuar = true;
+            while (continuar) {
+                System.out.println("\n=== Tipo de Pedido ===");
+                System.out.println("1. Pedido Regular");
+                System.out.println("2. Pedido de Evento");
+                System.out.println("3. Regresar");
+                System.out.print("Selecciona una opción: ");
+                int opcionTipoPedido = scanner.nextInt();
+                scanner.nextLine();
+
+                switch (opcionTipoPedido) {
+                    case OPCION_PEDIDO_REGULAR:
+                        procesarPedidoRegular(scanner, controlador, notificador, cliente);
+                        break;
+                    case OPCION_PEDIDO_EVENTO:
+                        procesarPedidoEvento(scanner, controlador, notificador, cliente);
+                        break;
+                    case OPCION_REGRESAR:
+                        continuar = false;
+                        break;
+                    default:
+                        System.out.println("Opción no válida. Intenta nuevamente.");
+                }
+            }
+        }
+    }
+
+    private static void procesarPedidoRegular(Scanner scanner, ControladorPedido controlador, NotificadorPedido notificador, Cliente cliente) {
         boolean continuarPedido = true;
         while (continuarPedido) {
             System.out.println("\n=== Menú de Pedido Regular ===");
@@ -105,65 +118,31 @@ public class Main {
 
             switch (opcionPedido) {
                 case 1:
-                    Litro mojitoTradicional = LitrosFactory.crearLitro("Mojito Tradicional");
-                    controlador.agregarLitro(mojitoTradicional);
-                    notificador.notificar("Mojito Tradicional añadido al pedido.");
+                    agregarLitro(scanner, controlador, notificador, "Mojito Tradicional");
                     break;
                 case 2:
-                    Litro mojitoFresa = LitrosFactory.crearLitro("Mojito de Fresa");
-                    controlador.agregarLitro(mojitoFresa);
-                    notificador.notificar("Mojito de Fresa añadido al pedido.");
+                    agregarLitro(scanner, controlador, notificador, "Mojito de Fresa");
                     break;
                 case 3:
-                    Litro azulito = LitrosFactory.crearLitro("Azulito");
-                    controlador.agregarLitro(azulito);
-                    notificador.notificar("Azulito añadido al pedido.");
+                    agregarLitro(scanner, controlador, notificador, "Azulito");
                     break;
                 case 4:
-                    Litro ultravioleta = LitrosFactory.crearLitro("Ultravioleta");
-                    controlador.agregarLitro(ultravioleta);
-                    notificador.notificar("Ultravioleta añadido al pedido.");
+                    agregarLitro(scanner, controlador, notificador, "Ultravioleta");
                     break;
                 case 5:
-                    LitroToppings bebidaPersonalizada = new LitroToppings();
-                    System.out.print("Selecciona la base de la bebida (Mojito Tradicional, Azulito, Ultravioleta): ");
-                    String baseBebida = scanner.nextLine();
-                    bebidaPersonalizada.setBase(baseBebida);
-
-                    String[] toppingsDisponibles = {"Hierbabuena", "Rodajas de Limón", "Azúcar morena", "Frutos rojos", "Hielo extra"};
-                    boolean agregarToppings = true;
-                    while (agregarToppings) {
-                        System.out.println("\n=== Selección de Toppings ===");
-                        for (int i = 0; i < toppingsDisponibles.length; i++) {
-                            System.out.println((i + 1) + ". " + toppingsDisponibles[i]);
-                        }
-                        System.out.println("6. Terminar selección de toppings");
-                        System.out.print("Selecciona un topping por su número (1-5), o 6 para terminar: ");
-                        int opcionTopping = scanner.nextInt();
-                        scanner.nextLine();
-
-                        if (opcionTopping >= 1 && opcionTopping <= 5) {
-                            String toppingSeleccionado = toppingsDisponibles[opcionTopping - 1];
-                            bebidaPersonalizada.agregarTopping(toppingSeleccionado);
-                            System.out.println(toppingSeleccionado + " añadido.");
-                        } else if (opcionTopping == 6) {
-                            agregarToppings = false;
-                        } else {
-                            System.out.println("Opción no válida. Intenta nuevamente.");
-                        }
-                    }
-                    controlador.agregarLitroToppings(bebidaPersonalizada);
-                    notificador.notificar(baseBebida + " personalizado añadido al pedido.");
+                    agregarToppings(scanner, controlador, notificador);
                     break;
-
                 case 6:
-                    continuarPedido = false;
+                    if (realizarCompra(controlador,cliente,notificador)) {
+                        continuarPedido = false;
+                    }
                     break;
+                default:
+                    System.out.println("Opción no válida. Intenta nuevamente.");
             }
         }
     }
-
-    private static void procesarPedidoEvento(Scanner scanner, ControladorPedido controlador, NotificadorPedido notificador) {
+    private static void procesarPedidoEvento(Scanner scanner, ControladorPedido controlador, NotificadorPedido notificador, Cliente cliente) {
         boolean continuarEvento = true;
         while (continuarEvento) {
             System.out.println("\n=== Menú de Pedido para Evento ===");
@@ -195,40 +174,129 @@ public class Main {
                     System.out.println("Tamaño no válido. Solo se permite 10 o 20 litros.");
                 }
             } else if (opcionVitrolero == 5) {
-                continuarEvento = false;
+                if (realizarCompra(controlador, cliente, notificador)) {
+                    continuarEvento = false;
+                }
             } else {
                 System.out.println("Opción no válida. Intenta nuevamente.");
             }
         }
     }
 
-    private static void crearCuentaNueva(Scanner scanner, GestionClientes gestionClientes) {
-        System.out.println("\n=== Crear Cuenta Nueva ===");
-        System.out.print("Nombre de usuario: ");
-        String nuevoUsuario = scanner.nextLine();
-        System.out.print("Contraseña: ");
-        String nuevaContrasena = scanner.nextLine();
-        System.out.print("Nombre completo: ");
-        String nombre = scanner.nextLine();
-        System.out.print("Edad: ");
-        int edad = scanner.nextInt();
-        scanner.nextLine();
+    private static void agregarLitro(Scanner scanner, ControladorPedido controlador, NotificadorPedido notificador, String tipo) {
+        Litro litro = LitrosFactory.crearLitro(tipo);
+        controlador.agregarLitro(litro);
+        notificador.notificar(tipo + " añadido al pedido.");
+    }
 
-        if (edad < 18) {
-            System.out.println("Debes ser mayor de 18 años para crear una cuenta.");
-        } else {
-            System.out.print("Dirección (Latitud): ");
-            double latitud = scanner.nextDouble();
-            System.out.print("Dirección (Longitud): ");
-            double longitud = scanner.nextDouble();
-            scanner.nextLine(); // Limpiar buffer
+    private static void agregarToppings(Scanner scanner, ControladorPedido controlador, NotificadorPedido notificador) {
+        LitroToppings bebidaPersonalizada = new LitroToppings();
+        System.out.print("Selecciona la base de la bebida (Mojito Tradicional, Azulito, Ultravioleta): ");
+        String baseBebida = scanner.nextLine();
+        bebidaPersonalizada.setBase(baseBebida);
 
-            Coordenadas ubicacion = new Coordenadas(latitud, longitud);
-            Cliente nuevoCliente = new Cliente(nuevoUsuario, nuevaContrasena, nombre, edad, longitud, edad, ubicacion);
-            gestionClientes.registrarCliente(nuevoCliente);
-            System.out.println("Cuenta creada exitosamente.");
+        String[] toppingsDisponibles = {"Hierbabuena", "Rodajas de Limón", "Azúcar morena", "Frutos rojos", "Hielo extra"};
+        boolean agregarToppings = true;
+        while (agregarToppings) {
+            System.out.println("\n=== Selección de Toppings ===");
+            for (int i = 0; i < toppingsDisponibles.length; i++) {
+                System.out.println((i + 1) + ". " + toppingsDisponibles[i]);
+            }
+            System.out.println("6. Terminar selección de toppings");
+            System.out.print("Selecciona un topping por su número (1-5), o 6 para terminar: ");
+            int opcionTopping = scanner.nextInt();
+            scanner.nextLine();
+
+            if (opcionTopping >= 1 && opcionTopping <= 5) {
+                bebidaPersonalizada.agregarTopping(toppingsDisponibles[opcionTopping - 1]);
+                System.out.println(toppingsDisponibles[opcionTopping - 1] + " agregado a la bebida.");
+            } else if (opcionTopping == 6) {
+                agregarToppings = false;
+            } else {
+                System.out.println("Opción no válida. Intenta nuevamente.");
+            }
         }
+        controlador.agregarLitroToppings(bebidaPersonalizada);
+        notificador.notificar("Bebida personalizada añadida al pedido.");
+    }
+    public static boolean realizarCompra(ControladorPedido controlador, Cliente cliente, NotificadorPedido notificador) {
+        Scanner scanner = new Scanner(System.in);
+    
+        // Solicitar número de cuenta bancaria
+        System.out.println("--- Pantalla de compra segura ---");
+        System.out.print("Por favor, ingrese su número de cuenta bancaria para finalizar la compra: ");
+        long numeroIngresado = scanner.nextLong();
+    
+        // Verificar si el número de cuenta bancaria ingresado coincide con el del cliente
+        if (numeroIngresado == cliente.getCuentaBancaria()) {
+            // Obtener el total de la compra
+            double totalCompra = controlador.obtenerTotalPedido();
+    
+            // Verificar fondos disponibles
+            if (cliente.getDineroDisponible() >= totalCompra) {
+                // Descontar del saldo del cliente
+                cliente.setDineroDisponible(cliente.getDineroDisponible() - totalCompra);
+                System.out.println("Compra realizada con éxito. Total: $" + totalCompra);
+                controlador.vaciarPedido(); // Limpiar el pedido después de realizar la compra
+                return true;
+            } else {
+                double diferencia = totalCompra - cliente.getDineroDisponible();
+                System.out.println("Fondos insuficientes. Necesitas $" + diferencia + " más.");
+            }
+        } else {
+            System.out.println("El número de cuenta ingresado no coincide. Por favor, inténtelo nuevamente.");
+        }
+        return false;
     }
     
-    
+    public static void seguimientoPedido(Repartidor repartidor) {
+        // Simular el proceso de entrega
+        // Aquí puedes usar un hilo o timer para simular el tiempo que tardará en llegar el repartidor
+        new Thread(() -> {
+            try {
+                // Simular el tiempo de preparación
+                Thread.sleep(5000); // 5 segundos de preparación
+                repartidor.actualizar("Preparando tu pedido...");
+                Thread.sleep(5000); // 5 segundos en camino
+                repartidor.actualizar("El repartidor está en camino...");
+                Thread.sleep(5000); // 5 segundos hasta llegar
+                repartidor.actualizar("El repartidor ha llegado a tu domicilio.");
+                // Aquí puedes agregar una notificación final
+                System.out.println("¡Tu pedido ha llegado! Sal a recogerlo.");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+        private static void crearCuentaNueva(Scanner scanner, GestionClientes gestionClientes) {
+            System.out.println("\n=== Crear Cuenta Nueva ===");
+            System.out.print("Nombre de usuario: ");
+            String nuevoUsuario = scanner.nextLine();
+            System.out.print("Contraseña: ");
+            String nuevaContrasena = scanner.nextLine();
+            System.out.print("Nombre completo: ");
+            String nombre = scanner.nextLine();
+            System.out.print("Número de cuenta bancaria: ");
+            long cuentaBancaria = scanner.nextLong();
+            System.out.print("Dinero disponible en la cuenta: ");
+            double dineroDisponible = scanner.nextDouble();
+            System.out.print("Edad: ");
+            int edad = scanner.nextInt();
+            scanner.nextLine(); // Limpiar el buffer
+        
+            if (edad < 18) {
+                System.out.println("Debes ser mayor de 18 años para crear una cuenta.");
+            } else {
+                System.out.print("Dirección (Latitud): ");
+                double latitud = scanner.nextDouble();
+                System.out.print("Dirección (Longitud): ");
+                double longitud = scanner.nextDouble();
+                scanner.nextLine(); // Limpiar buffer
+        
+                Coordenadas ubicacion = new Coordenadas(latitud, longitud);
+                gestionClientes.registrarCliente(nuevoUsuario, nuevaContrasena, nombre, cuentaBancaria, dineroDisponible, edad, ubicacion);
+                System.out.println("Cuenta creada exitosamente.");
+            }
+        }
+        
 }
