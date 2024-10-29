@@ -8,6 +8,11 @@ import java.util.List;
 public class GestionClientes {
     private static GestionClientes instanciaUnica = null;
     private List<Cliente> listaClientes;
+    
+    public void registrarCliente(Cliente cliente) {
+        listaClientes.add(cliente);
+    }
+    
 
     // Constructor privado para Singleton
     private GestionClientes() {
