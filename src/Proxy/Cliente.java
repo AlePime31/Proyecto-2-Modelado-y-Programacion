@@ -1,6 +1,7 @@
 package Proxy;
 
 import Modelo.Coordenadas;
+import Modelo.ConfiguracionAlcaldias;
 
 public class Cliente {
     private String nombreUsuario;
@@ -8,18 +9,20 @@ public class Cliente {
     private String nombre;
     private long cuentaBancaria;
     private double dineroDisponible;
-    private int edad; // Cambia a int para la edad
-    private Coordenadas ubicacion; // Cambia a Coordenadas
+    private int edad;
+    private String alcaldia; // Nueva variable para la alcaldía
+    private Coordenadas ubicacion; 
 
-    // Constructor
-    public Cliente(String nombreUsuario, String contrasena, String nombre, long cuentaBancaria, double dineroDisponible, int edad, Coordenadas ubicacion) {
+    // Constructor actualizado
+    public Cliente(String nombreUsuario, String contrasena, String nombre, long cuentaBancaria, double dineroDisponible, int edad, String alcaldia) {
         this.nombreUsuario = nombreUsuario;
         this.contrasena = contrasena;
         this.nombre = nombre;
-        this.edad = edad; // Agregar edad
-        this.ubicacion = ubicacion; // Agregar ubicación
-        this.cuentaBancaria=cuentaBancaria;
-        this.dineroDisponible=dineroDisponible;
+        this.edad = edad;
+        this.alcaldia = alcaldia;
+        this.ubicacion = ConfiguracionAlcaldias.obtenerCoordenadas(alcaldia); // Usar coordenadas de ConfiguracionAlcaldias
+        this.cuentaBancaria = cuentaBancaria;
+        this.dineroDisponible = dineroDisponible;
     }
 
     // Getters
@@ -52,6 +55,9 @@ public class Cliente {
     
     public void setDineroDisponible(double dineroDisponible) {
         this.dineroDisponible = dineroDisponible;
+    }
+    public String getAlcaldia() {
+        return alcaldia;
     }
     
 }

@@ -1,7 +1,6 @@
 package Singleton;
 
 import Proxy.Cliente;
-import Modelo.Coordenadas;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,8 +18,8 @@ public class GestionClientes {
         listaClientes = new ArrayList<>();
         // Cargar clientes de ejemplo
         // Asegúrate de que el constructor de Cliente acepte Coordenadas
-        listaClientes.add(new Cliente("usuario1", "12345", "Juan", 123456789, 500, 20, new Coordenadas(19, 99)));
-        listaClientes.add(new Cliente("usuario2", "54321", "Maria", 987654321, 800, 24, new Coordenadas(19.43, -99)));
+        listaClientes.add(new Cliente("usuario1", "12345", "Juan", 123456789, 500, 20, "Coyoacan"));
+        listaClientes.add(new Cliente("usuario2", "54321", "Maria", 987654321, 800, 24,"Tlalpan"));
     }
 
     // Método estático para obtener la única instancia de la clase
@@ -32,10 +31,11 @@ public class GestionClientes {
     }
 
     // Actualiza este método para aceptar Coordenadas
-    public void registrarCliente(String nombreUsuario, String contrasena, String nombre, long cuentaBancaria, double dineroDisponible, int edad, Coordenadas ubicacion) {
-        Cliente nuevoCliente = new Cliente(nombreUsuario, contrasena, nombre, cuentaBancaria, dineroDisponible, edad, ubicacion);
+    public void registrarCliente(String nombreUsuario, String contrasena, String nombre, long cuentaBancaria, double dineroDisponible, int edad, String alcaldia) {
+        Cliente nuevoCliente = new Cliente(nombreUsuario, contrasena, nombre, cuentaBancaria, dineroDisponible, edad, alcaldia);
         listaClientes.add(nuevoCliente);
     }
+    
 
     public Cliente buscarClientePorNombreUsuario(String nombreUsuario) {
         for (Cliente cliente : listaClientes) {

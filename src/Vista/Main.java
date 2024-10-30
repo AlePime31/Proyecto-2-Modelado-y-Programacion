@@ -2,6 +2,7 @@ package Vista;
 
 import Controlador.ControladorPedido;
 import Factory.LitrosFactory;
+import Modelo.ConfiguracionAlcaldias;
 import Modelo.Coordenadas;
 import Modelo.Litro;
 import Modelo.LitroToppings;
@@ -267,36 +268,38 @@ public class Main {
                 e.printStackTrace();
             }
         }).start();
-    }
-        private static void crearCuentaNueva(Scanner scanner, GestionClientes gestionClientes) {
-            System.out.println("\n=== Crear Cuenta Nueva ===");
-            System.out.print("Nombre de usuario: ");
-            String nuevoUsuario = scanner.nextLine();
-            System.out.print("Contraseña: ");
-            String nuevaContrasena = scanner.nextLine();
-            System.out.print("Nombre completo: ");
-            String nombre = scanner.nextLine();
-            System.out.print("Número de cuenta bancaria: ");
-            long cuentaBancaria = scanner.nextLong();
-            System.out.print("Dinero disponible en la cuenta: ");
-            double dineroDisponible = scanner.nextDouble();
-            System.out.print("Edad: ");
-            int edad = scanner.nextInt();
-            scanner.nextLine(); // Limpiar el buffer
-        
-            if (edad < 18) {
-                System.out.println("Debes ser mayor de 18 años para crear una cuenta.");
-            } else {
-                System.out.print("Dirección (Latitud): ");
-                double latitud = scanner.nextDouble();
-                System.out.print("Dirección (Longitud): ");
-                double longitud = scanner.nextDouble();
-                scanner.nextLine(); // Limpiar buffer
-        
-                Coordenadas ubicacion = new Coordenadas(latitud, longitud);
-                gestionClientes.registrarCliente(nuevoUsuario, nuevaContrasena, nombre, cuentaBancaria, dineroDisponible, edad, ubicacion);
-                System.out.println("Cuenta creada exitosamente.");
-            }
+    }    
+private static void crearCuentaNueva(Scanner scanner, GestionClientes gestionClientes) {
+    System.out.println("\n=== Crear Cuenta Nueva ===");
+    System.out.print("Nombre de usuario: ");
+    String nuevoUsuario = scanner.nextLine();
+    System.out.print("Contraseña: ");
+    String nuevaContrasena = scanner.nextLine();
+    System.out.print("Nombre completo: ");
+    String nombre = scanner.nextLine();
+    System.out.print("Número de cuenta bancaria: ");
+    long cuentaBancaria = scanner.nextLong();
+    System.out.print("Dinero disponible en la cuenta: ");
+    double dineroDisponible = scanner.nextDouble();
+    System.out.print("Edad: ");
+    int edad = scanner.nextInt();
+    scanner.nextLine(); // Limpiar el buffer
+
+    if (edad < 18) {
+        System.out.println("Debes ser mayor de 18 años para crear una cuenta.");
+    } else {
+        System.out.print("Selecciona tu alcaldía (Ej. Tlalpan, Coyoacan): ");
+        String alcaldia = scanner.nextLine();
+
+        // Obtener las coordenadas predeterminadas de la alcaldía
+        Coordenadas ubicacion = ConfiguracionAlcaldias.obtenerCoordenadas(alcaldia);
+        if (ubicacion == null) {
+            System.out.println("Alcaldía no reconocida. Por favor intenta nuevamente.");
+        } else {
+            gestionClientes.registrarCliente(nuevoUsuario, nuevaContrasena, nombre, cuentaBancaria, dineroDisponible, edad, alcaldia);
+            System.out.println("Cuenta creada exitosamente.");
         }
-        
+    }
+}
+
 }
