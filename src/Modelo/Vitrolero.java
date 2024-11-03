@@ -1,13 +1,13 @@
-
 package Modelo;
 
-public class Vitrolero {
+public class Vitrolero extends Litro {
     private String tipoMojito;
-    private int capacidadLitros; // 10 o 20 litros
+    private int capacidadLitros;
 
     public Vitrolero(String tipoMojito, int capacidadLitros) {
         this.tipoMojito = tipoMojito;
         this.capacidadLitros = capacidadLitros;
+        this.descripcion = tipoMojito + " " + capacidadLitros + " litros"; // Define la descripción
     }
 
     public String getTipoMojito() {
@@ -16,6 +16,11 @@ public class Vitrolero {
 
     public int getCapacidadLitros() {
         return capacidadLitros;
+    }
+
+    @Override
+    public double costo() {
+        return calcularCosto(); // Llama al método de costo específico
     }
 
     public double calcularCosto() {

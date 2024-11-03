@@ -5,7 +5,11 @@ import Factory.LitrosFactory;
 import Modelo.ConfiguracionAlcaldias;
 import Modelo.Coordenadas;
 import Modelo.Litro;
-import Modelo.LitroToppings;
+import Modelo.Decorator.ToppingAzucarMorena;
+import Modelo.Decorator.ToppingFrutosRojos;
+import Modelo.Decorator.ToppingHieloExtra;
+import Modelo.Decorator.ToppingHierbabuena;
+import Modelo.Decorator.ToppingRodajasLimon;
 import Observer.Repartidor;
 import Proxy.Cliente;
 import Observer.NotificadorPedido;
@@ -191,35 +195,53 @@ public class Main {
     }
 
     private static void agregarToppings(Scanner scanner, ControladorPedido controlador, NotificadorPedido notificador) {
-        LitroToppings bebidaPersonalizada = new LitroToppings();
-        System.out.print("Selecciona la base de la bebida (Mojito Tradicional, Azulito, Ultravioleta): ");
-        String baseBebida = scanner.nextLine();
-        bebidaPersonalizada.setBase(baseBebida);
+    System.out.print("Selecciona la base de la bebida (Mojito Tradicional, Azulito, Ultravioleta): ");
+    String baseBebida = scanner.nextLine();
+    Litro bebida = LitrosFactory.crearLitro(baseBebida); // Crear la bebida base
 
-        String[] toppingsDisponibles = {"Hierbabuena", "Rodajas de Limón", "Azúcar morena", "Frutos rojos", "Hielo extra"};
-        boolean agregarToppings = true;
-        while (agregarToppings) {
-            System.out.println("\n=== Selección de Toppings ===");
-            for (int i = 0; i < toppingsDisponibles.length; i++) {
-                System.out.println((i + 1) + ". " + toppingsDisponibles[i]);
-            }
-            System.out.println("6. Terminar selección de toppings");
-            System.out.print("Selecciona un topping por su número (1-5), o 6 para terminar: ");
-            int opcionTopping = scanner.nextInt();
-            scanner.nextLine();
+    String[] toppingsDisponibles = {"Hierbabuena", "Rodajas de Limón", "Azúcar morena", "Frutos rojos", "Hielo extra"};
+    boolean agregarToppings = true;
 
-            if (opcionTopping >= 1 && opcionTopping <= 5) {
-                bebidaPersonalizada.agregarTopping(toppingsDisponibles[opcionTopping - 1]);
-                System.out.println(toppingsDisponibles[opcionTopping - 1] + " agregado a la bebida.");
-            } else if (opcionTopping == 6) {
-                agregarToppings = false;
-            } else {
-                System.out.println("Opción no válida. Intenta nuevamente.");
-            }
+    while (agregarToppings) {
+        System.out.println("\n=== Selección de Toppings ===");
+        for (int i = 0; i < toppingsDisponibles.length; i++) {
+            System.out.println((i + 1) + ". " + toppingsDisponibles[i]);
         }
-        controlador.agregarLitroToppings(bebidaPersonalizada);
-        notificador.notificar("Bebida personalizada añadida al pedido.");
+        System.out.println("6. Terminar selección de toppings");
+        System.out.print("Selecciona un topping por su número (1-5), o 6 para terminar: ");
+        int opcionTopping = scanner.nextInt();
+        scanner.nextLine();
+
+        if (opcionTopping >= 1 && opcionTopping <= 5) {
+            switch (opcionTopping) {
+                case 1:
+                    bebida = new ToppingHierbabuena(bebida);
+                    break;
+                case 2:
+                    bebida = new ToppingRodajasLimon(bebida);
+                    break;
+                case 3:
+                    bebida = new ToppingAzucarMorena(bebida);
+                    break;
+                case 4:
+                    bebida = new ToppingFrutosRojos(bebida);
+                    break;
+                case 5:
+                    bebida = new ToppingHieloExtra(bebida);
+                    break;
+            }
+            System.out.println(toppingsDisponibles[opcionTopping - 1] + " agregado a la bebida.");
+        } else if (opcionTopping == 6) {
+            agregarToppings = false;
+        } else {
+            System.out.println("Opción no válida. Intenta nuevamente.");
+        }
     }
+
+    controlador.agregarLitro(bebida); // Agrega la bebida decorada
+    notificador.notificar("Bebida personalizada añadida al pedido.");
+}
+
     public static boolean realizarCompra(ControladorPedido controlador, Cliente cliente, NotificadorPedido notificador) {
         Scanner scanner = new Scanner(System.in);
     

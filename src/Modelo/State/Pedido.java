@@ -1,7 +1,10 @@
-package Modelo;
+package Modelo.State;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import Modelo.Litro;
+import Modelo.Vitrolero;
 
 public class Pedido {
     private List<Litro> listaLitros;

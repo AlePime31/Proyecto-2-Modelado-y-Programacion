@@ -7,6 +7,6 @@ public class MojitoTradicional extends Litro {
 
     @Override
     public double costo() {
-        return 7.99;
+        return 2;
     }
 }

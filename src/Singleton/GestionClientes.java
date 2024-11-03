@@ -18,7 +18,7 @@ public class GestionClientes {
         listaClientes = new ArrayList<>();
         // Cargar clientes de ejemplo
         // Asegúrate de que el constructor de Cliente acepte Coordenadas
-        listaClientes.add(new Cliente("usuario1", "12345", "Juan", 123456789, 500, 20, "Coyoacan"));
+        listaClientes.add(new Cliente("usuario1", "12345", "Juan", 123456789, 10000, 20, "Coyoacan"));
         listaClientes.add(new Cliente("usuario2", "54321", "Maria", 987654321, 800, 24,"Tlalpan"));
     }
 

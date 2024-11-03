@@ -1,8 +1,7 @@
 package Controlador;
 
 import Modelo.Litro;
-import Modelo.LitroToppings;
-import Modelo.Pedido;
+import Modelo.State.Pedido;
 
 public class ControladorPedido {
     private Pedido pedido;
@@ -31,10 +30,6 @@ public class ControladorPedido {
     public void vaciarPedido() {
         pedido.vaciar();
         System.out.println("El carrito ha sido vaciado.");
-    }
-    public void agregarLitroToppings(LitroToppings litros) {
-        // Aquí puedes agregar la lógica para añadir la pizza al pedido
-        System.out.println("Litro añadida al pedido: " + litros);
     }
     public double obtenerTotalPedido() {
         return pedido.calcularTotal();  // Asegúrate de implementar este método en la clase Pedido

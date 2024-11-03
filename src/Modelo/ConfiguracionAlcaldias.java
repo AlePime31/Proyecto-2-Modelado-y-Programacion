@@ -9,6 +9,7 @@ public class ConfiguracionAlcaldias {
     static {
         coordenadasAlcaldias.put("Tlalpan", new Coordenadas(19.4326, -99.1332));
         coordenadasAlcaldias.put("Coyoacan", new Coordenadas(19.4065, -99.1625));
+        coordenadasAlcaldias.put("Iztapalapa", new Coordenadas(19.842, -99.2123));
         // Agrega más alcaldías con sus respectivas coordenadas predeterminadas
     }
 

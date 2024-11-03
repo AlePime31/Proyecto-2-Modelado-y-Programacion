@@ -1,4 +1,4 @@
-package Modelo;
+package Modelo.State;
 
 public class PedidoEntregado implements EstadoPedido {
     public PedidoEntregado(Pedido pedido) {

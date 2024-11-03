@@ -7,6 +7,6 @@ public class Ultravioleta extends Litro{
 
     @Override
     public double costo() {
-        return 11.50;
+        return 1;
     }
 }

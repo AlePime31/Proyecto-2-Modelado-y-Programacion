@@ -1,4 +1,4 @@
-package Modelo;
+package Modelo.State;
 
 public class PedidoPreparando implements EstadoPedido {
     private Pedido pedido;

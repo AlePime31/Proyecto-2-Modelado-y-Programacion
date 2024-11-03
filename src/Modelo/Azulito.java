@@ -8,6 +8,6 @@ public class Azulito extends Litro{
 
     @Override
     public double costo() {
-        return 7.50;
+        return 4;
     }
 }

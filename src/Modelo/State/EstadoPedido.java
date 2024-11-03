@@ -1,4 +1,4 @@
-package Modelo;
+package Modelo.State;
 
 public interface EstadoPedido {
     void siguienteEstado();
