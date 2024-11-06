@@ -11,6 +11,8 @@ import Proxy.Cliente;
 import Observer.NotificadorPedido;
 import Singleton.GestionClientes;
 import Strategy.ContextoEntrega;
+import Strategy.EntregaEstandar;
+import Strategy.EntregaRapida;
 
 import java.util.Scanner;
 
@@ -68,12 +70,14 @@ public class Main {
         String nombreUsuario = scanner.nextLine();
         System.out.print("Contraseña: ");
         String contrasena = scanner.nextLine();
-
+    
         if (gestionClientes.validarInicioSesion(nombreUsuario, contrasena)) {
             Cliente cliente = gestionClientes.buscarClientePorNombreUsuario(nombreUsuario);
             Coordenadas ubicacionCliente = cliente.getUbicacion();
-
+    
             boolean continuar = true;
+            ContextoEntrega contextoEntrega = new ContextoEntrega();  // Crea un nuevo contexto de entrega
+    
             while (continuar) {
                 System.out.println("\n=== Tipo de Pedido ===");
                 System.out.println("1. Pedido Regular");
@@ -82,10 +86,10 @@ public class Main {
                 System.out.print("Selecciona una opción: ");
                 int opcionTipoPedido = scanner.nextInt();
                 scanner.nextLine();
-
+    
                 switch (opcionTipoPedido) {
                     case OPCION_PEDIDO_REGULAR:
-                        procesarPedidoRegular(scanner, controlador, notificador, cliente);
+                        procesarPedidoRegular(scanner, controlador, notificador, cliente, contextoEntrega);  // Pasar contextoEntrega
                         break;
                     case OPCION_PEDIDO_EVENTO:
                         procesarPedidoEvento(scanner, controlador, notificador, cliente);
@@ -99,47 +103,67 @@ public class Main {
             }
         }
     }
+    
 
-    private static void procesarPedidoRegular(Scanner scanner, ControladorPedido controlador, NotificadorPedido notificador, Cliente cliente) {
-        boolean continuarPedido = true;
-        while (continuarPedido) {
-            System.out.println("\n=== Menú de Pedido Regular ===");
-            System.out.println("1. Agregar Mojito Tradicional");
-            System.out.println("2. Agregar Mojito de Fresa");
-            System.out.println("3. Agregar Azulito");
-            System.out.println("4. Agregar Ultravioleta");
-            System.out.println("5. Agregar Toppings");
-            System.out.println("6. Finalizar Pedido");
-            System.out.print("Selecciona una opción: ");
-            int opcionPedido = scanner.nextInt();
-            scanner.nextLine();
+private static void procesarPedidoRegular(Scanner scanner, ControladorPedido controlador, NotificadorPedido notificador, Cliente cliente, ContextoEntrega contextoEntrega) {
+    boolean continuarPedido = true;
+    while (continuarPedido) {
+        System.out.println("\n=== Menú de Pedido Regular ===");
+        System.out.println("1. Agregar Mojito Tradicional");
+        System.out.println("2. Agregar Mojito de Fresa");
+        System.out.println("3. Agregar Azulito");
+        System.out.println("4. Agregar Ultravioleta");
+        System.out.println("5. Agregar Toppings");
+        System.out.println("6. Finalizar Pedido");
+        System.out.print("Selecciona una opción: ");
+        int opcionPedido = scanner.nextInt();
+        scanner.nextLine();
 
-            switch (opcionPedido) {
-                case 1:
-                    agregarLitro(scanner, controlador, notificador, "Mojito Tradicional");
-                    break;
-                case 2:
-                    agregarLitro(scanner, controlador, notificador, "Mojito de Fresa");
-                    break;
-                case 3:
-                    agregarLitro(scanner, controlador, notificador, "Azulito");
-                    break;
-                case 4:
-                    agregarLitro(scanner, controlador, notificador, "Ultravioleta");
-                    break;
-                case 5:
-                    agregarToppings(scanner, controlador, notificador);
-                    break;
-                case 6:
-                    if (realizarCompra(controlador, cliente, notificador)) {
-                        continuarPedido = false;
+        switch (opcionPedido) {
+            case 1:
+                agregarLitro(scanner, controlador, notificador, "Mojito Tradicional");
+                break;
+            case 2:
+                agregarLitro(scanner, controlador, notificador, "Mojito de Fresa");
+                break;
+            case 3:
+                agregarLitro(scanner, controlador, notificador, "Azulito");
+                break;
+            case 4:
+                agregarLitro(scanner, controlador, notificador, "Ultravioleta");
+                break;
+            case 5:
+                agregarToppings(scanner, controlador, notificador);
+                break;
+            case 6:
+                if (realizarCompra(controlador, cliente, notificador)) {
+                    // Preguntar por el tipo de entrega
+                    System.out.println("Selecciona el tipo de entrega:");
+                    System.out.println("1. Entrega Rápida");
+                    System.out.println("2. Entrega Estándar");
+                    int opcionEntrega = scanner.nextInt();
+                    scanner.nextLine(); // Limpiar buffer
+
+                    // Configurar la estrategia de entrega
+                    if (opcionEntrega == 1) {
+                        contextoEntrega.setEstrategia(new EntregaRapida()); // Seleccionar entrega rápida
+                    } else if (opcionEntrega == 2) {
+                        contextoEntrega.setEstrategia(new EntregaEstandar()); // Seleccionar entrega estándar
+                    } else {
+                        System.out.println("Opción no válida, seleccionando entrega estándar por defecto.");
+                        contextoEntrega.setEstrategia(new EntregaEstandar()); // Establecer como estándar por defecto
                     }
-                    break;
-                default:
-                    System.out.println("Opción no válida. Intenta nuevamente.");
-            }
+
+                    // Ejecutar la entrega
+                    contextoEntrega.entregarPedido();
+                    continuarPedido = false;
+                }
+                break;
+            default:
+                System.out.println("Opción no válida. Intenta nuevamente.");
         }
     }
+}
 
     private static void procesarPedidoEvento(Scanner scanner, ControladorPedido controlador, NotificadorPedido notificador, Cliente cliente) {
         boolean continuarEvento = true;
@@ -258,9 +282,6 @@ public class Main {
         }
         return false;
     }
-    
-    
-
  // Método corregido:
 public static void crearCuentaNueva(Scanner scanner, GestionClientes gestionClientes) {
     System.out.println("\n=== Crear Cuenta Nueva ===");
