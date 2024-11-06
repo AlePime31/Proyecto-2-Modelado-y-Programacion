@@ -59,5 +59,10 @@ public class Cliente {
     public String getAlcaldia() {
         return alcaldia;
     }
+    // Agregar este método en la clase Cliente
+public boolean verificarCuentaBancaria(long cuentaIngresada) {
+    return this.cuentaBancaria == cuentaIngresada;
+}
+
     
 }

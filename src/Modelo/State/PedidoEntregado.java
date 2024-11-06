@@ -1,7 +1,10 @@
 package Modelo.State;
 
 public class PedidoEntregado implements EstadoPedido {
+    private Pedido pedido;
+
     public PedidoEntregado(Pedido pedido) {
+        this.pedido = pedido;
     }
 
     @Override

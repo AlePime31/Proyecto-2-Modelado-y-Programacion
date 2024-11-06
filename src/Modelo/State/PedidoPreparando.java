@@ -9,6 +9,7 @@ public class PedidoPreparando implements EstadoPedido {
 
     @Override
     public void siguienteEstado() {
+        // Cambiar el estado a "Pedido entregado"
         pedido.setEstadoPedido(new PedidoEntregado(pedido));
     }
 

@@ -37,7 +37,7 @@ public class Pedido {
             System.out.println("Total: $" + total);
         }
     }
-
+    
     public EstadoPedido getEstadoPedido() {
         return estadoPedido;
     }
@@ -61,8 +61,21 @@ public class Pedido {
         for (Litro litro : listaLitros) {
             total += litro.costo();
         }
+        System.out.println("Total calculado en Pedido: $" + total); // Línea de depuración
         return total;
     }
-    
-    
+    public void seguimientoPedido() {
+        try {
+            // Mostrar el estado actual y cambiar a siguiente
+            estadoPedido.mostrarEstado();
+            Thread.sleep(2000); // Espera 2 segundos
+            estadoPedido.siguienteEstado(); // Cambiar a siguiente estado
+            estadoPedido.mostrarEstado();
+            Thread.sleep(2000); // Espera 2 segundos
+            estadoPedido.siguienteEstado(); // Cambiar a siguiente estado
+            estadoPedido.mostrarEstado();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }

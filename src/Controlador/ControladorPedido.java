@@ -23,16 +23,23 @@ public class ControladorPedido {
         pedido.getEstadoPedido().siguienteEstado();
         pedido.getEstadoPedido().mostrarEstado();
     }
+
     public void eliminarLitro(Litro litros) {
         pedido.eliminarLitro(litros);
         System.out.println("Litro eliminado: " + litros.getDescripcion());
     }
+
     public void vaciarPedido() {
         pedido.vaciar();
         System.out.println("El carrito ha sido vaciado.");
     }
+
     public double obtenerTotalPedido() {
         return pedido.calcularTotal();  // Asegúrate de implementar este método en la clase Pedido
     }
-    
+
+    // Método para iniciar el seguimiento del pedido
+    public void iniciarSeguimiento() {
+        pedido.seguimientoPedido();  // Esto llama al método de seguimiento de estados
+    }
 }

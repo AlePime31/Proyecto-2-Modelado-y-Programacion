@@ -5,11 +5,7 @@ import Factory.LitrosFactory;
 import Modelo.ConfiguracionAlcaldias;
 import Modelo.Coordenadas;
 import Modelo.Litro;
-import Modelo.Decorator.ToppingAzucarMorena;
-import Modelo.Decorator.ToppingFrutosRojos;
-import Modelo.Decorator.ToppingHieloExtra;
-import Modelo.Decorator.ToppingHierbabuena;
-import Modelo.Decorator.ToppingRodajasLimon;
+import Modelo.Decorator.*;
 import Observer.Repartidor;
 import Proxy.Cliente;
 import Observer.NotificadorPedido;
@@ -19,10 +15,10 @@ import Strategy.ContextoEntrega;
 import java.util.Scanner;
 
 public class Main {
+    // Constantes para opciones de menú
     private static final int OPCION_INICIAR_SESION = 1;
     private static final int OPCION_CREAR_CUENTA = 2;
     private static final int OPCION_SALIR = 3;
-
     private static final int OPCION_PEDIDO_REGULAR = 1;
     private static final int OPCION_PEDIDO_EVENTO = 2;
     private static final int OPCION_REGRESAR = 3;
@@ -52,16 +48,13 @@ public class Main {
                 case OPCION_INICIAR_SESION:
                     iniciarSesion(scanner, controlador, notificador, gestionClientes);
                     break;
-
                 case OPCION_CREAR_CUENTA:
                     crearCuentaNueva(scanner, gestionClientes);
                     break;
-
                 case OPCION_SALIR:
                     ejecutando = false;
                     System.out.println("Gracias por usar Mojitos. ¡Hasta luego!");
                     break;
-
                 default:
                     System.out.println("Opción no válida. Intenta nuevamente.");
             }
@@ -138,7 +131,7 @@ public class Main {
                     agregarToppings(scanner, controlador, notificador);
                     break;
                 case 6:
-                    if (realizarCompra(controlador,cliente,notificador)) {
+                    if (realizarCompra(controlador, cliente, notificador)) {
                         continuarPedido = false;
                     }
                     break;
@@ -147,6 +140,7 @@ public class Main {
             }
         }
     }
+
     private static void procesarPedidoEvento(Scanner scanner, ControladorPedido controlador, NotificadorPedido notificador, Cliente cliente) {
         boolean continuarEvento = true;
         while (continuarEvento) {
@@ -195,53 +189,41 @@ public class Main {
     }
 
     private static void agregarToppings(Scanner scanner, ControladorPedido controlador, NotificadorPedido notificador) {
-    System.out.print("Selecciona la base de la bebida (Mojito Tradicional, Azulito, Ultravioleta): ");
-    String baseBebida = scanner.nextLine();
-    Litro bebida = LitrosFactory.crearLitro(baseBebida); // Crear la bebida base
+        System.out.print("Selecciona la base de la bebida (Mojito Tradicional, Azulito, Ultravioleta): ");
+        String baseBebida = scanner.nextLine();
+        Litro bebida = LitrosFactory.crearLitro(baseBebida);
 
-    String[] toppingsDisponibles = {"Hierbabuena", "Rodajas de Limón", "Azúcar morena", "Frutos rojos", "Hielo extra"};
-    boolean agregarToppings = true;
+        String[] toppingsDisponibles = {"Hierbabuena", "Rodajas de Limón", "Azúcar morena", "Frutos rojos", "Hielo extra"};
+        boolean agregarToppings = true;
 
-    while (agregarToppings) {
-        System.out.println("\n=== Selección de Toppings ===");
-        for (int i = 0; i < toppingsDisponibles.length; i++) {
-            System.out.println((i + 1) + ". " + toppingsDisponibles[i]);
-        }
-        System.out.println("6. Terminar selección de toppings");
-        System.out.print("Selecciona un topping por su número (1-5), o 6 para terminar: ");
-        int opcionTopping = scanner.nextInt();
-        scanner.nextLine();
-
-        if (opcionTopping >= 1 && opcionTopping <= 5) {
-            switch (opcionTopping) {
-                case 1:
-                    bebida = new ToppingHierbabuena(bebida);
-                    break;
-                case 2:
-                    bebida = new ToppingRodajasLimon(bebida);
-                    break;
-                case 3:
-                    bebida = new ToppingAzucarMorena(bebida);
-                    break;
-                case 4:
-                    bebida = new ToppingFrutosRojos(bebida);
-                    break;
-                case 5:
-                    bebida = new ToppingHieloExtra(bebida);
-                    break;
+        while (agregarToppings) {
+            System.out.println("\n=== Selección de Toppings ===");
+            for (int i = 0; i < toppingsDisponibles.length; i++) {
+                System.out.println((i + 1) + ". " + toppingsDisponibles[i]);
             }
-            System.out.println(toppingsDisponibles[opcionTopping - 1] + " agregado a la bebida.");
-        } else if (opcionTopping == 6) {
-            agregarToppings = false;
-        } else {
-            System.out.println("Opción no válida. Intenta nuevamente.");
+            System.out.println("6. Terminar selección de toppings");
+            System.out.print("Selecciona un topping por su número (1-5), o 6 para terminar: ");
+            int opcionTopping = scanner.nextInt();
+            scanner.nextLine();
+
+            if (opcionTopping >= 1 && opcionTopping <= 5) {
+                switch (opcionTopping) {
+                    case 1 -> bebida = new ToppingHierbabuena(bebida);
+                    case 2 -> bebida = new ToppingRodajasLimon(bebida);
+                    case 3 -> bebida = new ToppingAzucarMorena(bebida);
+                    case 4 -> bebida = new ToppingFrutosRojos(bebida);
+                    case 5 -> bebida = new ToppingHieloExtra(bebida);
+                }
+                System.out.println(toppingsDisponibles[opcionTopping - 1] + " añadido.");
+            } else if (opcionTopping == 6) {
+                agregarToppings = false;
+            } else {
+                System.out.println("Opción no válida. Intenta nuevamente.");
+            }
         }
+        controlador.agregarLitro(bebida);
+        notificador.notificar("Bebida con toppings añadida al pedido.");
     }
-
-    controlador.agregarLitro(bebida); // Agrega la bebida decorada
-    notificador.notificar("Bebida personalizada añadida al pedido.");
-}
-
     public static boolean realizarCompra(ControladorPedido controlador, Cliente cliente, NotificadorPedido notificador) {
         Scanner scanner = new Scanner(System.in);
     
@@ -260,7 +242,12 @@ public class Main {
                 // Descontar del saldo del cliente
                 cliente.setDineroDisponible(cliente.getDineroDisponible() - totalCompra);
                 System.out.println("Compra realizada con éxito. Total: $" + totalCompra);
-                controlador.vaciarPedido(); // Limpiar el pedido después de realizar la compra
+    
+                // Llamar al método para mostrar el seguimiento del pedido
+                controlador.iniciarSeguimiento();  // Llamada a seguimiento del pedido
+    
+                // Notificar que la compra ha sido completada
+                notificador.notificar("Pedido completado.");
                 return true;
             } else {
                 double diferencia = totalCompra - cliente.getDineroDisponible();
@@ -272,26 +259,10 @@ public class Main {
         return false;
     }
     
-    public static void seguimientoPedido(Repartidor repartidor) {
-        // Simular el proceso de entrega
-        // Aquí puedes usar un hilo o timer para simular el tiempo que tardará en llegar el repartidor
-        new Thread(() -> {
-            try {
-                // Simular el tiempo de preparación
-                Thread.sleep(5000); // 5 segundos de preparación
-                repartidor.actualizar("Preparando tu pedido...");
-                Thread.sleep(5000); // 5 segundos en camino
-                repartidor.actualizar("El repartidor está en camino...");
-                Thread.sleep(5000); // 5 segundos hasta llegar
-                repartidor.actualizar("El repartidor ha llegado a tu domicilio.");
-                // Aquí puedes agregar una notificación final
-                System.out.println("¡Tu pedido ha llegado! Sal a recogerlo.");
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).start();
-    }    
-private static void crearCuentaNueva(Scanner scanner, GestionClientes gestionClientes) {
+    
+
+ // Método corregido:
+public static void crearCuentaNueva(Scanner scanner, GestionClientes gestionClientes) {
     System.out.println("\n=== Crear Cuenta Nueva ===");
     System.out.print("Nombre de usuario: ");
     String nuevoUsuario = scanner.nextLine();
@@ -313,9 +284,8 @@ private static void crearCuentaNueva(Scanner scanner, GestionClientes gestionCli
         System.out.print("Selecciona tu alcaldía (Ej. Tlalpan, Coyoacan): ");
         String alcaldia = scanner.nextLine();
 
-        // Obtener las coordenadas predeterminadas de la alcaldía
-        Coordenadas ubicacion = ConfiguracionAlcaldias.obtenerCoordenadas(alcaldia);
-        if (ubicacion == null) {
+        // Aquí solo pasas el nombre de la alcaldía, no las coordenadas
+        if (ConfiguracionAlcaldias.obtenerCoordenadas(alcaldia) == null) {
             System.out.println("Alcaldía no reconocida. Por favor intenta nuevamente.");
         } else {
             gestionClientes.registrarCliente(nuevoUsuario, nuevaContrasena, nombre, cuentaBancaria, dineroDisponible, edad, alcaldia);
