@@ -67,15 +67,16 @@ public class Pedido {
     public void seguimientoPedido() {
         try {
             // Mostrar el estado actual y cambiar a siguiente
-            estadoPedido.mostrarEstado();
+            estadoPedido.mostrarEstado(); // Pedido pendiente
             Thread.sleep(2000); // Espera 2 segundos
-            estadoPedido.siguienteEstado(); // Cambiar a siguiente estado
-            estadoPedido.mostrarEstado();
+            estadoPedido.siguienteEstado(); // Cambia a preparación
+            estadoPedido.mostrarEstado(); // Pedido en preparación
             Thread.sleep(2000); // Espera 2 segundos
-            estadoPedido.siguienteEstado(); // Cambiar a siguiente estado
-            estadoPedido.mostrarEstado();
+            estadoPedido.siguienteEstado(); // Cambia a entregado
+            estadoPedido.mostrarEstado(); // Pedido entregado
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
+    
 }

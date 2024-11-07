@@ -2,6 +2,7 @@ package Controlador;
 
 import Modelo.Litro;
 import Modelo.State.Pedido;
+import Modelo.State.PedidoPendiente;
 
 public class ControladorPedido {
     private Pedido pedido;
@@ -33,6 +34,13 @@ public class ControladorPedido {
         pedido.vaciar();
         System.out.println("El carrito ha sido vaciado.");
     }
+    // En ControladorPedido
+    public void vaciarCarrito() {
+    pedido.vaciar(); // Vacía los productos en el pedido
+    pedido.setEstadoPedido(new PedidoPendiente(pedido)); // Reinicia el estado a pendiente
+    System.out.println("El carrito y los datos del pedido han sido reiniciados.");
+}
+
 
     public double obtenerTotalPedido() {
         return pedido.calcularTotal();  // Asegúrate de implementar este método en la clase Pedido

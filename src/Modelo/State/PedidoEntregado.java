@@ -9,7 +9,7 @@ public class PedidoEntregado implements EstadoPedido {
 
     @Override
     public void siguienteEstado() {
-        System.out.println("El pedido ya ha sido entregado.");
+        System.out.println("El pedido ya ha sido entregraaado.");
     }
 
     @Override

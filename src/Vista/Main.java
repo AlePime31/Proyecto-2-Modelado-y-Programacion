@@ -105,65 +105,35 @@ public class Main {
     }
     
 
-private static void procesarPedidoRegular(Scanner scanner, ControladorPedido controlador, NotificadorPedido notificador, Cliente cliente, ContextoEntrega contextoEntrega) {
-    boolean continuarPedido = true;
-    while (continuarPedido) {
-        System.out.println("\n=== Menú de Pedido Regular ===");
-        System.out.println("1. Agregar Mojito Tradicional");
-        System.out.println("2. Agregar Mojito de Fresa");
-        System.out.println("3. Agregar Azulito");
-        System.out.println("4. Agregar Ultravioleta");
-        System.out.println("5. Agregar Toppings");
-        System.out.println("6. Finalizar Pedido");
-        System.out.print("Selecciona una opción: ");
-        int opcionPedido = scanner.nextInt();
-        scanner.nextLine();
-
-        switch (opcionPedido) {
-            case 1:
-                agregarLitro(scanner, controlador, notificador, "Mojito Tradicional");
-                break;
-            case 2:
-                agregarLitro(scanner, controlador, notificador, "Mojito de Fresa");
-                break;
-            case 3:
-                agregarLitro(scanner, controlador, notificador, "Azulito");
-                break;
-            case 4:
-                agregarLitro(scanner, controlador, notificador, "Ultravioleta");
-                break;
-            case 5:
-                agregarToppings(scanner, controlador, notificador);
-                break;
-            case 6:
-                if (realizarCompra(controlador, cliente, notificador)) {
-                    // Preguntar por el tipo de entrega
-                    System.out.println("Selecciona el tipo de entrega:");
-                    System.out.println("1. Entrega Rápida");
-                    System.out.println("2. Entrega Estándar");
-                    int opcionEntrega = scanner.nextInt();
-                    scanner.nextLine(); // Limpiar buffer
-
-                    // Configurar la estrategia de entrega
-                    if (opcionEntrega == 1) {
-                        contextoEntrega.setEstrategia(new EntregaRapida()); // Seleccionar entrega rápida
-                    } else if (opcionEntrega == 2) {
-                        contextoEntrega.setEstrategia(new EntregaEstandar()); // Seleccionar entrega estándar
-                    } else {
-                        System.out.println("Opción no válida, seleccionando entrega estándar por defecto.");
-                        contextoEntrega.setEstrategia(new EntregaEstandar()); // Establecer como estándar por defecto
+    private static void procesarPedidoRegular(Scanner scanner, ControladorPedido controlador, NotificadorPedido notificador, Cliente cliente, ContextoEntrega contextoEntrega) {
+        boolean continuarPedido = true;
+        while (continuarPedido) {
+            System.out.println("\n=== Menú de Pedido Regular ===");
+            System.out.println("1. Agregar Mojito Tradicional");
+            System.out.println("2. Agregar Mojito de Fresa");
+            System.out.println("3. Agregar Azulito");
+            System.out.println("4. Agregar Ultravioleta");
+            System.out.println("5. Agregar Toppings");
+            System.out.println("6. Finalizar Pedido");
+            System.out.print("Selecciona una opción: ");
+            int opcionPedido = scanner.nextInt();
+            scanner.nextLine();
+    
+            switch (opcionPedido) {
+                case 1 -> agregarLitro(scanner, controlador, notificador, "Mojito Tradicional");
+                case 2 -> agregarLitro(scanner, controlador, notificador, "Mojito de Fresa");
+                case 3 -> agregarLitro(scanner, controlador, notificador, "Azulito");
+                case 4 -> agregarLitro(scanner, controlador, notificador, "Ultravioleta");
+                case 5 -> agregarToppings(scanner, controlador, notificador);
+                case 6 -> {
+                    if (realizarCompra(controlador, cliente, notificador)) {
+                        continuarPedido = false; // Termina el flujo si la compra se realiza con éxito
                     }
-
-                    // Ejecutar la entrega
-                    contextoEntrega.entregarPedido();
-                    continuarPedido = false;
                 }
-                break;
-            default:
-                System.out.println("Opción no válida. Intenta nuevamente.");
+                default -> System.out.println("Opción no válida. Intenta nuevamente.");
+            }
         }
     }
-}
 
     private static void procesarPedidoEvento(Scanner scanner, ControladorPedido controlador, NotificadorPedido notificador, Cliente cliente) {
         boolean continuarEvento = true;
@@ -251,37 +221,58 @@ private static void procesarPedidoRegular(Scanner scanner, ControladorPedido con
     public static boolean realizarCompra(ControladorPedido controlador, Cliente cliente, NotificadorPedido notificador) {
         Scanner scanner = new Scanner(System.in);
     
-        // Solicitar número de cuenta bancaria
         System.out.println("--- Pantalla de compra segura ---");
         System.out.print("Por favor, ingrese su número de cuenta bancaria para finalizar la compra: ");
         long numeroIngresado = scanner.nextLong();
     
-        // Verificar si el número de cuenta bancaria ingresado coincide con el del cliente
         if (numeroIngresado == cliente.getCuentaBancaria()) {
-            // Obtener el total de la compra
             double totalCompra = controlador.obtenerTotalPedido();
     
-            // Verificar fondos disponibles
             if (cliente.getDineroDisponible() >= totalCompra) {
-                // Descontar del saldo del cliente
                 cliente.setDineroDisponible(cliente.getDineroDisponible() - totalCompra);
-                System.out.println("Compra realizada con éxito. Total: $" + totalCompra);
+                System.out.printf("Compra realizada con éxito. Total: $%.2f%n", totalCompra);
     
-                // Llamar al método para mostrar el seguimiento del pedido
-                controlador.iniciarSeguimiento();  // Llamada a seguimiento del pedido
+                ContextoEntrega contextoEntrega = new ContextoEntrega();
+                boolean opcionValida = false;
     
-                // Notificar que la compra ha sido completada
+                while (!opcionValida) {
+                    System.out.println("Selecciona el tipo de entrega:");
+                    System.out.println("1. Entrega Rápida (20 minutos)");
+                    System.out.println("2. Entrega Estándar (40 minutos)");
+                    int opcionEntrega = scanner.nextInt();
+    
+                    switch (opcionEntrega) {
+                        case 1 -> {
+                            contextoEntrega.setEstrategia(new EntregaRapida());
+                            opcionValida = true;
+                        }
+                        case 2 -> {
+                            contextoEntrega.setEstrategia(new EntregaEstandar());
+                            opcionValida = true;
+                        }
+                        default -> System.out.println("Opción no válida. Por favor, selecciona una opción correcta.");
+                    }
+                }
+    
+                contextoEntrega.entregarPedido();
+                controlador.iniciarSeguimiento();
                 notificador.notificar("Pedido completado.");
+    
+                // Llamar a vaciarCarrito al final para limpiar todo
+                controlador.vaciarCarrito();
+    
                 return true;
             } else {
-                double diferencia = totalCompra - cliente.getDineroDisponible();
-                System.out.println("Fondos insuficientes. Necesitas $" + diferencia + " más.");
+                System.out.printf("Fondos insuficientes. Necesitas $%.2f más.%n", totalCompra - cliente.getDineroDisponible());
             }
         } else {
             System.out.println("El número de cuenta ingresado no coincide. Por favor, inténtelo nuevamente.");
         }
         return false;
     }
+    
+    
+    
  // Método corregido:
 public static void crearCuentaNueva(Scanner scanner, GestionClientes gestionClientes) {
     System.out.println("\n=== Crear Cuenta Nueva ===");
