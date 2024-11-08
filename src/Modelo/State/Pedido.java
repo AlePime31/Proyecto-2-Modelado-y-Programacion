@@ -9,6 +9,7 @@ import Modelo.Vitrolero;
 public class Pedido {
     private List<Litro> listaLitros;
     private EstadoPedido estadoPedido; // Maneja el estado del pedido (En preparación, En camino, Entregado, etc.)
+    
     public Pedido() {
         listaLitros = new ArrayList<>();
         estadoPedido = new PedidoPendiente(this); // Estado inicial correcto
@@ -17,13 +18,12 @@ public class Pedido {
     public void agregarLitro(Litro litro) {
         listaLitros.add(litro);
     }
+
     public void agregarVitrolero(Vitrolero vitrolero) {
         // Lógica para agregar el vitrolero al pedido
         System.out.println("Añadiendo " + vitrolero.getTipoMojito() + " de " + vitrolero.getCapacidadLitros() + " litros al pedido.");
-        // Puedes manejarlo similar a agregar Litro
     }
-    
-    
+
     public void mostrarPedido() {
         System.out.println("\n=== Pedido Actual ===");
         if (listaLitros.isEmpty()) {
@@ -38,6 +38,11 @@ public class Pedido {
         }
     }
     
+    // Getter para listaLitros
+    public List<Litro> getListaLitros() {
+        return listaLitros;
+    }
+
     public EstadoPedido getEstadoPedido() {
         return estadoPedido;
     }
@@ -45,6 +50,7 @@ public class Pedido {
     public void setEstadoPedido(EstadoPedido estadoPedido) {
         this.estadoPedido = estadoPedido;
     }
+
     public void eliminarLitro(Litro litro) {
         if (listaLitros.contains(litro)) {
             listaLitros.remove(litro);
@@ -53,9 +59,11 @@ public class Pedido {
             System.out.println(litro.getDescripcion() + " no está en el pedido.");
         }
     }
+
     public void vaciar() {
         listaLitros.clear();
     }
+
     public double calcularTotal() {
         double total = 0.0;
         for (Litro litro : listaLitros) {
@@ -64,9 +72,9 @@ public class Pedido {
         System.out.println("Total calculado en Pedido: $" + total); // Línea de depuración
         return total;
     }
+
     public void seguimientoPedido() {
         try {
-            // Mostrar el estado actual y cambiar a siguiente
             estadoPedido.mostrarEstado(); // Pedido pendiente
             Thread.sleep(2000); // Espera 2 segundos
             estadoPedido.siguienteEstado(); // Cambia a preparación
@@ -78,5 +86,4 @@ public class Pedido {
             e.printStackTrace();
         }
     }
-    
 }

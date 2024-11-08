@@ -13,8 +13,11 @@ public abstract class LitroDecorator extends Litro {
     public String getDescripcion() {
         return litroDecorado.getDescripcion();
     }
-
+    
     @Override
-    public abstract double costo();
+    public double costo() {
+        return litroDecorado.costo(); // Se asegura de calcular el costo acumulativo correctamente
+    }
+    
 }
 

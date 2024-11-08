@@ -181,16 +181,24 @@ public class Main {
         controlador.agregarLitro(litro);
         notificador.notificar(tipo + " añadido al pedido.");
     }
-
     private static void agregarToppings(Scanner scanner, ControladorPedido controlador, NotificadorPedido notificador) {
-        System.out.print("Selecciona la base de la bebida (Mojito Tradicional, Azulito, Ultravioleta): ");
-        String baseBebida = scanner.nextLine();
-        Litro bebida = LitrosFactory.crearLitro(baseBebida);
-
-        String[] toppingsDisponibles = {"Hierbabuena", "Rodajas de Limón", "Azúcar morena", "Frutos rojos", "Hielo extra"};
+        System.out.println("Selecciona el índice de la bebida a la que deseas agregar toppings:");
+        controlador.mostrarPedidoConIndices(); // Mostrar las bebidas actuales con índices y precios
+    
+        // Leer el índice de la bebida seleccionada
+        int indiceBebida = scanner.nextInt();
+        scanner.nextLine(); // Limpiar el buffer
+    
+        // Obtener la bebida correspondiente al índice
+        Litro bebidaSeleccionada = controlador.obtenerLitroPorIndice(indiceBebida - 1); // Ajusta el índice (de 1 a 0 basado)
+        if (bebidaSeleccionada == null) {
+            System.out.println("Índice no válido.");
+            return;
+        }
+    
         boolean agregarToppings = true;
-
         while (agregarToppings) {
+            String[] toppingsDisponibles = {"Hierbabuena", "Rodajas de Limón", "Azúcar morena", "Frutos rojos", "Hielo extra"};
             System.out.println("\n=== Selección de Toppings ===");
             for (int i = 0; i < toppingsDisponibles.length; i++) {
                 System.out.println((i + 1) + ". " + toppingsDisponibles[i]);
@@ -198,15 +206,16 @@ public class Main {
             System.out.println("6. Terminar selección de toppings");
             System.out.print("Selecciona un topping por su número (1-5), o 6 para terminar: ");
             int opcionTopping = scanner.nextInt();
-            scanner.nextLine();
-
+            scanner.nextLine(); // Limpiar el buffer
+    
             if (opcionTopping >= 1 && opcionTopping <= 5) {
+                // Decorar la bebida existente con el topping seleccionado
                 switch (opcionTopping) {
-                    case 1 -> bebida = new ToppingHierbabuena(bebida);
-                    case 2 -> bebida = new ToppingRodajasLimon(bebida);
-                    case 3 -> bebida = new ToppingAzucarMorena(bebida);
-                    case 4 -> bebida = new ToppingFrutosRojos(bebida);
-                    case 5 -> bebida = new ToppingHieloExtra(bebida);
+                    case 1 -> bebidaSeleccionada = new ToppingHierbabuena(bebidaSeleccionada);
+                    case 2 -> bebidaSeleccionada = new ToppingRodajasLimon(bebidaSeleccionada);
+                    case 3 -> bebidaSeleccionada = new ToppingAzucarMorena(bebidaSeleccionada);
+                    case 4 -> bebidaSeleccionada = new ToppingFrutosRojos(bebidaSeleccionada);
+                    case 5 -> bebidaSeleccionada = new ToppingHieloExtra(bebidaSeleccionada);
                 }
                 System.out.println(toppingsDisponibles[opcionTopping - 1] + " añadido.");
             } else if (opcionTopping == 6) {
@@ -215,8 +224,10 @@ public class Main {
                 System.out.println("Opción no válida. Intenta nuevamente.");
             }
         }
-        controlador.agregarLitro(bebida);
-        notificador.notificar("Bebida con toppings añadida al pedido.");
+    
+        // Actualizar la bebida en el pedido
+        controlador.actualizarLitro(indiceBebida - 1, bebidaSeleccionada);
+        notificador.notificar("Toppings añadidos a la bebida seleccionada.");
     }
     public static boolean realizarCompra(ControladorPedido controlador, Cliente cliente, NotificadorPedido notificador) {
         Scanner scanner = new Scanner(System.in);
@@ -271,24 +282,22 @@ public class Main {
         return false;
     }
     
-    
-    
- // Método corregido:
-public static void crearCuentaNueva(Scanner scanner, GestionClientes gestionClientes) {
-    System.out.println("\n=== Crear Cuenta Nueva ===");
-    System.out.print("Nombre de usuario: ");
-    String nuevoUsuario = scanner.nextLine();
-    System.out.print("Contraseña: ");
-    String nuevaContrasena = scanner.nextLine();
-    System.out.print("Nombre completo: ");
-    String nombre = scanner.nextLine();
-    System.out.print("Número de cuenta bancaria: ");
-    long cuentaBancaria = scanner.nextLong();
-    System.out.print("Dinero disponible en la cuenta: ");
-    double dineroDisponible = scanner.nextDouble();
-    System.out.print("Edad: ");
-    int edad = scanner.nextInt();
-    scanner.nextLine(); // Limpiar el buffer
+    // Método corregido:
+    public static void crearCuentaNueva(Scanner scanner, GestionClientes gestionClientes) {
+        System.out.println("\n=== Crear Cuenta Nueva ===");
+        System.out.print("Nombre de usuario: ");
+        String nuevoUsuario = scanner.nextLine();
+        System.out.print("Contraseña: ");
+        String nuevaContrasena = scanner.nextLine();
+        System.out.print("Nombre completo: ");
+        String nombre = scanner.nextLine();
+        System.out.print("Número de cuenta bancaria: ");
+        long cuentaBancaria = scanner.nextLong();
+        System.out.print("Dinero disponible en la cuenta: ");
+        double dineroDisponible = scanner.nextDouble();
+        System.out.print("Edad: ");
+        int edad = scanner.nextInt();
+        scanner.nextLine(); // Limpiar el buffer
 
     if (edad < 18) {
         System.out.println("Debes ser mayor de 18 años para crear una cuenta.");

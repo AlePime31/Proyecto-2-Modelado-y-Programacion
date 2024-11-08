@@ -14,8 +14,6 @@ public class ToppingAzucarMorena extends LitroDecorator {
 
     @Override
     public double costo() {
-        double total = litroDecorado.costo() + 1.00; // Costo base + costo del topping
-        System.out.println("Costo calculado: " + total); // depuración
-        return total;
+        return litroDecorado.costo() + 1.00; // Costo del topping sumado al costo acumulado de la bebida
     }
 }
