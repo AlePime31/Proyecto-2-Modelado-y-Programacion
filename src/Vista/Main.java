@@ -302,7 +302,7 @@ public class Main {
     if (edad < 18) {
         System.out.println("Debes ser mayor de 18 años para crear una cuenta.");
     } else {
-        System.out.print("Selecciona tu alcaldía (Ej. Tlalpan, Coyoacan): ");
+        System.out.print("Selecciona tu alcaldía (Ej. Tlalpan, Coyoacan, Iztapalapa, Venustiano Carranza, Azcapotzalco, Xochimilco, Gustavo A. Madero, Benito Juarez): ");
         String alcaldia = scanner.nextLine();
 
         // Aquí solo pasas el nombre de la alcaldía, no las coordenadas
