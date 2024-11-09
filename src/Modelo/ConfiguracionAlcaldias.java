@@ -15,7 +15,7 @@ public class ConfiguracionAlcaldias {
         coordenadasAlcaldias.put("Azcapotzalco", new Coordenadas(19.5000, -99.2000));
         coordenadasAlcaldias.put("Xochimilco", new Coordenadas(19.2500, -99.1000));
         coordenadasAlcaldias.put("Gustavo A. Madero", new Coordenadas(19.5075, -99.1381));
-        coordenadasAlcaldias.put("Benito Juárez", new Coordenadas(19.4000, -99.1700));
+        coordenadasAlcaldias.put("Benito Juarez", new Coordenadas(19.4000, -99.1700));
     }
 
     public static Coordenadas obtenerCoordenadas(String alcaldia) {
